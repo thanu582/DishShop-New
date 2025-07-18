@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center fw-bold text-dark">Browse Categories</h2>
+
+    <!-- Search bar -->
+    <div class="row mb-4 justify-content-center">
+        <div class="col-12 col-md-6">
+            <input type="text" id="categorySearch" class="form-control" placeholder="Search categories..." aria-label="Search categories">
+        </div>
+    </div>
+
+    <!-- Category Grid -->
+    <div class="row" id="categoryGrid">
+        {% for category in categories %}
+        <div class="col-6 col-md-3 mb-3 category-card" data-name="{{ category.name|lower }}">
+            <div class="card h-100 shadow-sm">
+                <a href="{% url 'model_list' category.id %}" class="text-decoration-none">
+                    <div class="image-box-small">
+                        <img src="{{ category.image.url }}" class="category-img-small" alt="{{ category.name }}" loading="lazy">
+                    </div>
+                    <div class="card-body text-center">
+                        <h6 class="card-title text-capitalize text-dark">{{ category.name }}</h6>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Script to filter categories based on search input -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("categorySearch");
+    const cards = document.querySelectorAll(".category-card");
+
+    searchInput.addEventListener("input", function () {
+        const query = this.value.toLowerCase().trim();
+        cards.forEach(card => {
+            const name = card.getAttribute("data-name");
+            if (name.includes(query)) {
+                card.style.display = "block"; // Show matching categories
+            } else {
+                card.style.display = "none"; // Hide non-matching categories
+            }
+        });
+    });
+});
+</script>
+
+<!-- Styling for category images -->
+<style>
+.image-box-small {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px 8px 0 0;
+}
+
+.category-img-small {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    padding: 10px;
+    transition: transform 0.2s;
+}
+
+.category-img-small:hover {
+    transform: scale(1.05);
+}
+</style>
+{% endblock %}
